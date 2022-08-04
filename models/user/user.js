@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const model = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 
@@ -33,9 +32,7 @@ const userSchema = new Schema({
     imagen: String,
     isActive: Boolean,
     userCreacion: String,
-    fechaCreacion: Date,
     userModificacion: String,
-    fechaModificacion: Date,
     userAnulacion: String,
     fechaAnulacion: Date,
 
