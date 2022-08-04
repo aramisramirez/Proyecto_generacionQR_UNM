@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const User = require('../../models/user/user');
 
+//nuevo usuario
 const signUp = async (req, res) => {
     // capture data 
     const { nombres, apellidos, username, correo, password, rol } = req.body;
@@ -47,20 +48,21 @@ const signUp = async (req, res) => {
     }
 }
 
-
+//login
 const signIn = async (req, res) => {
 
-    const { email, password } = req.body;
-    const userFound = await User.findOne({ 'email': email, 'status': true }).populate("idRole");
+    const { correo, password } = req.body;
+    const userFound = await User.findOne({ 'correo': correo, 'isActive': true });
+    // const userFound = await User.findOne({ 'correo': correo, 'isActive': true }).populate("rol");
 
     // Incorrect data
-    if (!userFound) return res.status(200).json({ message: 'User not found' });
+    if (!userFound) return res.status(200).json({ message: '¡Usuario no encontrado!' });
 
     const matchPassword = await User.comparePassword(password, userFound.password);
 
-    if (!matchPassword) return res.status(401).json({ message: 'Invalid password' });
+    if (!matchPassword) return res.status(401).json({ message: '¡Contrasaeña inválida!' });
 
-    const token = jwt.sign({ id: userFound._id }, config.SECRET, {
+    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, imagen: userFound.imagen }, config.secret, {
         expiresIn: 86400 // 24 Hours
     });
 
