@@ -2,6 +2,8 @@ const validator = require('validator');
 const config = require('../../database/config');
 const jwt = require('jsonwebtoken');
 const Rol = require('../../models/rol/rol');
+const Accesos = require('../../models/accesosRol/accesosRol');
+
 
 //nuevo usuario
 const add = async (req, res) => {
@@ -47,5 +49,68 @@ const add = async (req, res) => {
 }
 
 
-module.exports = { add }
+const getRoles = async (req, res) => {
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin") {
+
+        try {
+            let roles = await Rol.find();
+            if (!roles.length) {
+                message = 'No existen registros';
+            }
+            const token = jwt.sign({ roles }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({
+                token
+            });
+        }
+        catch (e) {
+            return res.status(500).json({
+                message: '¡Ocurrió un error!'
+            });
+        }
+
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para listar roles!' });
+    }
+}
+
+const getAccesos = async (req, res) => {
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin") {
+
+        try {
+
+            let accesos = await Accesos.find();
+
+            if (!accesos.length) {
+                message = 'No existen registros';
+            }
+            const token = jwt.sign({ accesos }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({
+                token
+            });
+        }
+        catch (e) {
+            return res.status(500).json({
+                message: '¡Ocurrió un error!'
+            });
+        }
+
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para listar accesos!' });
+    }
+}
+
+
+
+
+module.exports = { add, getRoles, getAccesos }
 
