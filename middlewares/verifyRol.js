@@ -9,6 +9,4 @@ const checkDuplicateRol = async (req, res, next) => {
     next();
 }
 
-module.exports = {
-    checkDuplicateRol
-}
+module.exports = { checkDuplicateRol }

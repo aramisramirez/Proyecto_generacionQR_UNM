@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const pkg = require('../package.json');
 const { dbConnection } = require('../database/config');
 
-
 class Server {
 
     constructor() {

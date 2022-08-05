@@ -62,7 +62,7 @@ const signIn = async (req, res) => {
 
     if (!matchPassword) return res.status(401).json({ message: '¡Contrasaeña inválida!' });
 
-    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, imagen: userFound.imagen }, config.secret, {
+    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, username: userFound.username, imagen: userFound.imagen, rol: userFound.rol }, config.secret, {
         expiresIn: 86400 // 24 Hours
     });
 
