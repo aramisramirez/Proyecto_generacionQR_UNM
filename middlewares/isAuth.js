@@ -11,14 +11,13 @@ const ensureAuth = async (req, res, next) => {
     }
     //recogemos el token de la cabecera. Partimos el string porque viene con la palabra Bearer 
     let token = req.headers.authorization.split(" ")[1];
-    console.log(token)
     let payload;
     try {
         //Comprobamos que el token coincide
         payload = await jwtSimple.decode(token, config.secret);
         //Comprobamos que el token no ha expirado 
         if (payload.exp <= moment.unix()) {
-            return res.status(401).send({ message: 'Tu conexión ha expirado. Vuelve a hacer login.' });
+            return res.status(401).send({ message: 'Tu conexión ha expirado, ¡Vuelve a hacer iniciar sesión!' });
         }
     } catch (e) {
         return res.status(500).send({ message: "Ha ocurrido un error: " + e.message });
