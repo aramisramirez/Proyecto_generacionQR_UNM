@@ -11,6 +11,7 @@ const ensureAuth = async (req, res, next) => {
     }
     //recogemos el token de la cabecera. Partimos el string porque viene con la palabra Bearer 
     let token = req.headers.authorization.split(" ")[1];
+    console.log(token)
     let payload;
     try {
         //Comprobamos que el token coincide
