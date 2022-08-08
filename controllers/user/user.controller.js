@@ -20,7 +20,7 @@ const getUsers = async (req, res) => {
                 expiresIn: 86400 // 24 Hours
             });
 
-            return res.status(200).json({ token });
+            return res.status(200).json({ users });
         }
         catch (e) {
             return res.status(500).json({
@@ -43,7 +43,7 @@ const updatepassword = async (req, res) => {
 
     ];
     const passEncrypt = await User.encryptPassword(params.password);
-    console.log(passEncrypt)
+
 
     // validate array data and if there is incorrect data return
     if (validate.every(v => v === true)) {
