@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "62ec3e40e6d6b9d330359932"
+  },
+  "name": "full",
+  "pantallaAcceso": [
+    "reportes",
+    "generacionQR"
+  ]
+},{
+  "_id": {
+    "$oid": "62ec3e40e6d6b9d330359933"
+  },
+  "name": "parcial",
+  "pantallaAcceso": [
+    "generacionQR"
+  ]
+}]
