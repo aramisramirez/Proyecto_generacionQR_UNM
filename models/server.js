@@ -18,6 +18,8 @@ class Server {
                 version: pkg.version,
             });
         });
+        //CORS
+        this.app.use(cors());
         // Index routes
         this.app.use('/api', require('../routes'));
 
