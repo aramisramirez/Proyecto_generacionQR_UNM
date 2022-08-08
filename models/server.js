@@ -9,7 +9,7 @@ class Server {
     constructor() {
         this.app = express();
         this.app.use(express.json())
-        this.port = process.env.PORT;
+        this.port = process.env.PORT || '3000';
         // Route default
         this.app.get('/info', (req, res) => {
             res.json({
@@ -18,6 +18,9 @@ class Server {
                 version: pkg.version,
             });
         });
+
+        //CORS
+        this.app.use( cors() );
         // Index routes
         this.app.use('/api', require('../routes'));
 
