@@ -86,7 +86,7 @@ const signIn = async (req, res) => {
         expiresIn: 86400 // 24 Hours
     });
 
-    res.status(200).json({ token, imagen: userFound.imagen, bit: BitLogin });
+    res.status(200).json({ token, imagen: userFound.imagen, bitStatus: BitLogin.status, bitMessage: BitLogin.message });
 }
 
 module.exports = {
