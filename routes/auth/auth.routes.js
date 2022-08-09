@@ -6,7 +6,7 @@ const verifyAuth = require('../../middlewares/isAuth');
 const router = Router();
 
 //nuevo usuario
-router.post('/signup', [verifyAuth.ensureAuth, verifyUser.checkDuplicateEmail], authCtrl.signUp);
+router.post('/signup', [verifyAuth.ensureAuth, verifyUser.checkDuplicateUsername, verifyUser.checkDuplicateEmail], authCtrl.signUp);
 //login
 router.post('/signin', authCtrl.signIn);
 

@@ -64,7 +64,7 @@ const updateStatus = async (req, res) => {
     const { rol } = req.user;
     if (rol === "admin") {
         User.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false }, { new: true }, (err, userUp) => {
-            if (err) return res.status(404).json({ message: '¡ocurrió un error!' });
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
             if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
             const token = jwt.sign({ user: userUp.username }, config.secret, {
                 expiresIn: 86400 // 24 Hours

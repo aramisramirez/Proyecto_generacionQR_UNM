@@ -23,29 +23,37 @@ const signUp = async (req, res) => {
         ];
         // validate array data and if there is incorrect data return
         if (validate.every(v => v === true)) {
-            // Create the object
-            const newUser = new User({
-                nombres,
-                apellidos,
-                username,
-                correo,
-                password: await User.encryptPassword(password),
-                rol,
-                isActive: true,
-                imagen: 'ejemplo',
-                userCreacion: usernameLogin,
-                userModificacion: null,
-                userAnulacion: null,
-                fechaAnulacion: null,
-            });
+            const lenghtPass = password.length;
+            //validate password
+            if (lenghtPass >= 6) {
+                // Create the object
+                const newUser = new User({
+                    nombres,
+                    apellidos,
+                    username,
+                    correo,
+                    password: await User.encryptPassword(password),
+                    rol,
+                    isActive: true,
+                    imagen: 'ejemplo',
+                    userCreacion: usernameLogin,
+                    userModificacion: null,
+                    userAnulacion: null,
+                    fechaAnulacion: null,
+                });
 
-            const savedUser = await newUser.save();
-            // // Response success
-            const token = jwt.sign({ id: savedUser._id, username: savedUser.username }, config.secret, {
-                expiresIn: 86400 // 24 Hours
-            });
+                const savedUser = await newUser.save();
+                // // Response success
+                const token = jwt.sign({ id: savedUser._id, username: savedUser.username }, config.secret, {
+                    expiresIn: 86400 // 24 Hours
+                });
 
-            res.status(201).json(token);
+                res.status(201).json(token);
+            } else {
+                // Return error
+                res.status(400).json({ message: '¡la contraseña debe ser de al menos 6 caracteres!' });
+            }
+
         } else {
             // Return error
             res.status(200).json({ message: '¡Datos incorrectos!' });

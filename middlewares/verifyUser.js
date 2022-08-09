@@ -9,5 +9,15 @@ const checkDuplicateEmail = async (req, res, next) => {
     next();
 }
 
-module.exports = { checkDuplicateEmail }
+const checkDuplicateUsername = async (req, res, next) => {
+
+    const user = await User.findOne({ username: req.body.username, isActive: true });
+
+    if (user) return res.status(400).json({ message: '¡Este nombre de usuario ya existe!' });
+
+    next();
+}
+
+
+module.exports = { checkDuplicateEmail, checkDuplicateUsername }
 
