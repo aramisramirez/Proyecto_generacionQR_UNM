@@ -2,6 +2,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const User = require('../../models/user/user');
+const Bit = require('../../controllers/bitacora/bitacora.controller');
 
 //nuevo usuario
 const signUp = async (req, res) => {
@@ -78,11 +79,14 @@ const signIn = async (req, res) => {
 
     if (!matchPassword) return res.status(401).json({ message: '¡Contraseña inválida!' });
 
+    //bitácora
+    const BitLogin = await Bit.add(userFound);
+
     const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, username: userFound.username, rol: userFound.rol }, config.secret, {
         expiresIn: 86400 // 24 Hours
     });
 
-    res.status(200).json({ token, imagen: userFound.imagen });
+    res.status(200).json({ token, imagen: userFound.imagen, bit: BitLogin });
 }
 
 module.exports = {
