@@ -7,7 +7,7 @@ const validator = require('validator');
 
 
 //nuevo registro
-const add = async (userFound) => {
+const add = async (userFound, accion) => {
     const { nombres, apellidos, username, correo, rol } = userFound;
     // array of validation
     const validate = [
@@ -25,7 +25,8 @@ const add = async (userFound) => {
             apellidos,
             username,
             correo,
-            rol
+            rol,
+            accion
         });
 
         const savedBit = await newBitacora.save();
@@ -38,6 +39,30 @@ const add = async (userFound) => {
 
 }
 
+const getBit = async (req, res) => {
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin") {
+
+        try {
+            let bits = await Bit.find();
+            if (!bits.length) {
+                message = 'No existen registros';
+            }
+            return res.status(200).json({ bits });
+        }
+        catch (e) {
+            return res.status(500).json({
+                message: '¡Ocurrió un error!'
+            });
+        }
+
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para listar bitácora!' });
+    }
+}
 
 
-module.exports = { add }
+
+module.exports = { add, getBit }

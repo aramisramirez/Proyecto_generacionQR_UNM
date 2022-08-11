@@ -22,9 +22,8 @@ const bitacoraSchema = new Schema({
     rol: {
         type: String,
         required: true
-    }
-
-
+    },
+    accion: String
 }, {
     timestamps: true,
     versionkey: false

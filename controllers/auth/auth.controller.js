@@ -80,7 +80,8 @@ const signIn = async (req, res) => {
     if (!matchPassword) return res.status(401).json({ message: '¡Contraseña inválida!' });
 
     //bitácora
-    const BitLogin = await Bit.add(userFound);
+    const accion = "Login";
+    const BitLogin = await Bit.add(userFound, accion);
 
     const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, username: userFound.username, rol: userFound.rol }, config.secret, {
         expiresIn: 86400 // 24 Hours
