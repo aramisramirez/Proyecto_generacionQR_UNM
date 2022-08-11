@@ -49,7 +49,7 @@ const signUp = async (req, res) => {
                     expiresIn: 86400 // 24 Hours
                 });
 
-                res.status(201).json(token);
+                res.status(201).json({ message: '¡Usuario agregado correctamente!', token });
             } else {
                 // Return error
                 res.status(400).json({ message: '¡la contraseña debe ser de al menos 6 caracteres!' });

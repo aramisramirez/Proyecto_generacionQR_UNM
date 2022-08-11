@@ -1,9 +1,6 @@
 
 const Bit = require('../../models/bitacora/bitacora');
-const jwt = require('jsonwebtoken');
-const config = require('../../database/config');
 const validator = require('validator');
-
 
 
 //nuevo registro
