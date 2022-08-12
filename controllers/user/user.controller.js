@@ -1,4 +1,3 @@
-
 const User = require('../../models/user/user');
 const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
