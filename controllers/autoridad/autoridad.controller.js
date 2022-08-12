@@ -81,6 +81,28 @@ const getAutoridad = async (req, res) => {
     }
 }
 
+const updateStatus = async (req, res) => {
+    const id = req.params.id;
+    // capture data 
+    const { rol, usernameLogin } = req.user;
+    if (rol === "admin") {
+        Autoridad.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, autUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!autUp) return res.status(404).json({ message: '¡la autoridad no existe!' });
+
+            const token = jwt.sign({ cargo: autUp.cargo }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Estado actualizado!', token });
+        });
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para editar estado de autoridades!' });
+    }
+
+}
 
 
-module.exports = { getAutoridad, addAutoridad }
+
+
+module.exports = { getAutoridad, addAutoridad, updateStatus }

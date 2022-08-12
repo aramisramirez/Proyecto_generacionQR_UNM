@@ -83,7 +83,7 @@ const signIn = async (req, res) => {
     const accion = "Login";
     const BitLogin = await Bit.add(userFound, accion);
 
-    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, username: userFound.username, rol: userFound.rol }, config.secret, {
+    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, usernameLogin: userFound.username, rol: userFound.rol }, config.secret, {
         expiresIn: 86400 // 24 Hours
     });
 

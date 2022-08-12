@@ -33,6 +33,7 @@ const getUsers = async (req, res) => {
 const updatePassword = async (req, res) => {
     const id = req.params.id;
     const params = req.body;
+    const { usernameLogin } = req.user;
     // array of validation
     const validate = [
         !validator.isEmpty(params.password)
@@ -45,7 +46,7 @@ const updatePassword = async (req, res) => {
         if (lenghtPass >= 6) {
             const passEncrypt = await User.encryptPassword(params.password);
             // If the data is correct, proceed to update the information
-            User.findOneAndUpdate({ _id: id, isActive: true }, { password: passEncrypt }, { new: true }, (err, userUp) => {
+            User.findOneAndUpdate({ _id: id, isActive: true }, { password: passEncrypt, userModificacion: usernameLogin }, { new: true }, (err, userUp) => {
                 if (err) return res.status(404).json({ message: '¡El usuario no existe!' });
                 if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
                 const token = jwt.sign({ user: userUp.username }, config.secret, {
@@ -67,10 +68,11 @@ const updatePassword = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     const id = req.params.id;
+    const { usernameLogin } = req.user;
     // capture data 
     const { rol } = req.user;
     if (rol === "admin") {
-        User.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false }, { new: true }, (err, userUp) => {
+        User.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, userUp) => {
             if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
             if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
             const token = jwt.sign({ user: userUp.username }, config.secret, {

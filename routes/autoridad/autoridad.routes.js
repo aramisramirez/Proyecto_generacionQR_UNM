@@ -7,6 +7,7 @@ const router = Router();
 
 router.get('/', verifyAuth.ensureAuth, autoridadCtrl.getAutoridad);
 router.post('/add', [verifyAuth.ensureAuth, verifyCargo.checkDuplicateCargoAutoridad], autoridadCtrl.addAutoridad);
+router.put('/updateStatus/:id', verifyAuth.ensureAuth, autoridadCtrl.updateStatus);
 
 
 module.exports = router;

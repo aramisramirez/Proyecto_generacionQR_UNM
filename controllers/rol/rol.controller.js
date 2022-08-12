@@ -11,7 +11,7 @@ const add = async (req, res) => {
     const { rol } = req.user;
     if (rol === "admin") {
         const { nombreRol, tipoRol } = req.body;
-        const { username } = req.user;
+        const { usernameLogin } = req.user;
 
         // array of validation
         const validate = [
@@ -25,7 +25,7 @@ const add = async (req, res) => {
             const newRol = new Rol({
                 nombreRol,
                 tipoRol,
-                userCreacion: username,
+                userCreacion: usernameLogin,
                 userModificacion: null,
                 userAnulacion: null,
                 fechaAnulacion: null,
