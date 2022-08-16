@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 const Rol = require('../../models/rol/rol');
 const Accesos = require('../../models/accesosRol/accesosRol');
 
-
-//nuevo usuario
 const add = async (req, res) => {
     // capture data 
     const { rol } = req.user;

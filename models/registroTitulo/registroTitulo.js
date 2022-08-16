@@ -31,6 +31,10 @@ const registroSchema = new Schema({
         type: String,
         required: true
     },
+    sexo: {
+        type: String,
+        required: true
+    },
     tipoTitulo: {
         type: String,
         required: true
