@@ -3,6 +3,7 @@ const config = require('../../database/config');
 const Sede = require('../../models/sede/sede');
 const jwt = require('jsonwebtoken');
 
+
 const add = async (req, res) => {
     // capture data 
     const { rol } = req.user;
@@ -52,7 +53,7 @@ const getSedes = async (req, res) => {
 
         try {
             let sedes = await Sede.find();
-            if (!roles.length) {
+            if (!sedes.length) {
                 message = 'No existen registros';
             }
             const token = jwt.sign({ sedes }, config.secret, {
@@ -74,7 +75,28 @@ const getSedes = async (req, res) => {
     }
 }
 
+const updateStatus = async (req, res) => {
+    const id = req.params.id;
+    const { usernameLogin } = req.user;
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin") {
+        Sede.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, sedeUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!sedeUp) return res.status(404).json({ message: '¡La sede no existe!' });
+            const token = jwt.sign({ nombreSede: sedeUp.nombreSede }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Estado actualizado!', token });
+        });
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para editar estado de sedes!' });
+    }
+
+}
 
 
 
-module.exports = { add, getSedes }
+
+module.exports = { add, getSedes, updateStatus }

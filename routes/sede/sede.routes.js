@@ -5,7 +5,8 @@ const verifySede = require('../../middlewares/verifySede');
 
 const router = Router();
 
-// router.get('/', verifyAuth.ensureAuth, sedeCtrl.getSedes);
+router.get('/', verifyAuth.ensureAuth, sedeCtrl.getSedes);
 router.post('/add', [verifyAuth.ensureAuth, verifySede.checkDuplicateSede], sedeCtrl.add);
+router.put('/updateStatus/:id', verifyAuth.ensureAuth, sedeCtrl.updateStatus);
 
 module.exports = router;
