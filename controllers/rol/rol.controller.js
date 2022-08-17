@@ -23,10 +23,7 @@ const add = async (req, res) => {
             const newRol = new Rol({
                 nombreRol,
                 tipoRol,
-                userCreacion: usernameLogin,
-                userModificacion: null,
-                userAnulacion: null,
-                fechaAnulacion: null,
+                userCreacion: usernameLogin
             });
 
             const savedRol = await newRol.save();
@@ -53,7 +50,7 @@ const getRoles = async (req, res) => {
     if (rol === "admin") {
 
         try {
-            let roles = await Rol.find();
+            let roles = await Rol.find({}, { nombreRol: 1, tipoRol: 1 });
             if (!roles.length) {
                 message = 'No existen registros';
             }

@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const validator = require('validator');
 
-
-
 const getUsers = async (req, res) => {
     // capture data 
     const { rol } = req.user;

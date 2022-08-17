@@ -58,7 +58,7 @@ const getAutoridad = async (req, res) => {
     if (rol === "admin") {
 
         try {
-            let auts = await Autoridad.find({ isActive: true });
+            let auts = await Autoridad.find({ isActive: true }, { nombres: 1, apellidos: 1, cargo: 1 });
             if (!auts.length) {
                 message = 'No existen registros';
             }

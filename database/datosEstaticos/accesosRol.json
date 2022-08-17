@@ -1,0 +1,15 @@
+[
+  {
+    "name": "full",
+    "pantallaAcceso": [
+      "reportes",
+      "generacionQR"
+    ]
+  },
+  {
+    "name": "parcial",
+    "pantallaAcceso": [
+      "generacionQR"
+    ]
+  }
+]

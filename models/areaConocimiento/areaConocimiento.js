@@ -3,13 +3,27 @@ const Schema = mongoose.Schema;
 
 
 const areaConocimientoSchema = new Schema({
-    name: {
+    nombre: {
         type: String,
         unique: true,
         required: true
     },
 
-    pantallaAcceso: [],
+    carreras: [
+        {
+            nombreCarrera: {
+                type: String,
+                unique: true,
+                required: true
+            },
+            tituloOtorgado: {
+                type: String,
+                unique: true,
+                required: true
+            }
+
+        }
+    ],
 
 }, {
     timestamps: true,

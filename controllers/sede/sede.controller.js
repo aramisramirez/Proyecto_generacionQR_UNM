@@ -52,7 +52,7 @@ const getSedes = async (req, res) => {
     if (rol === "admin" || rol == "secretario") {
 
         try {
-            let sedes = await Sede.find({ isActive: true });
+            let sedes = await Sede.find({ isActive: true }, { nombreSede: 1, descripcion: 1 });
             if (!sedes.length) {
                 message = 'No existen registros';
             }
