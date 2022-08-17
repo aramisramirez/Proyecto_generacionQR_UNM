@@ -16,14 +16,11 @@ const areaConocimientoSchema = new Schema({
                 unique: true,
                 required: true
             },
-            tituloOtorgado: {
-                type: String,
-                unique: true,
-                required: true
-            }
+            tituloOtorgado: String
 
         }
     ],
+    isActive: Boolean,
 
 }, {
     timestamps: true,
