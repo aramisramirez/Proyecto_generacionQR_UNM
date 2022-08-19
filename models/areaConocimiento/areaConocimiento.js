@@ -21,6 +21,10 @@ const areaConocimientoSchema = new Schema({
         }
     ],
     isActive: Boolean,
+    userCreacion: String,
+    userModificacion: String,
+    userAnulacion: String,
+    fechaAnulacion: Date,
 
 }, {
     timestamps: true,

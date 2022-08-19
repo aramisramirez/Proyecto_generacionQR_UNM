@@ -14,32 +14,28 @@ const addAreaConocimiento = async (req, res) => {
         const carreras = req.body.carreras;
         const { usernameLogin } = req.user;
 
-
         // array of validation
         const validate = [
             !validator.isEmpty(nombre)
         ];
         // validate array data and if there is incorrect data return
         if (validate.every(v => v === true) && (carreras.length > 0)) {
-            console.log(carreras)
             // Create the object
-            // const newAutoridad = new Autoridad({
-            //     nombres,
-            //     apellidos,
-            //     cargo,
-            //     isActive: true,
-            //     userCreacion: usernameLogin,
-            //     userModificacion: null,
-            //     userAnulacion: null,
-            //     fechaAnulacion: null,
-            // });
-            // const savedAutoridad = await newAutoridad.save();
-            // // // Response success
-            // const token = jwt.sign({ id: savedAutoridad._id, nombres: savedAutoridad.nombres, apellidos: savedAutoridad.apellidos, cargo: savedAutoridad.cargo }, config.secret, {
-            //     expiresIn: 86400 // 24 Hours
-            // });
+            const newAreaConocimiento = new AreaConocimiento({
+                nombre,
+                carreras,
+                isActive: true,
+                userCreacion: usernameLogin,
+                userAnulacion: null,
+                fechaAnulacion: null,
+            });
+            const savedArea = await newAreaConocimiento.save();
+            // Response success
+            const token = jwt.sign({ id: savedArea._id, nombre: savedArea.nombre, carreras: savedArea.carreras }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
 
-            // res.status(201).json({ message: '¡Autoridad agregada correctamente!', token });
+            res.status(201).json({ message: '¡Área de conocimiento agregada correctamente!', token });
 
         } else {
             // Return error
@@ -52,5 +48,50 @@ const addAreaConocimiento = async (req, res) => {
 
 }
 
+//eliminar
+const updateStatus = async (req, res) => {
+    const id = req.params.id;
+    // capture data 
+    const { rol, usernameLogin } = req.user;
+    if (rol === "admin") {
+        AreaConocimiento.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, areaUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!areaUp) return res.status(404).json({ message: '¡El área de conocimiento no existe!' });
 
-module.exports = { addAreaConocimiento }
+            const token = jwt.sign({ nombre: areaUp.nombre }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Estado actualizado!', token });
+        });
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para editar área de conocimiento!' });
+    }
+
+}
+
+
+const updateAddCarreras = async (req, res) => {
+
+    const id = req.params.id;
+    const carrera = req.body.carrera;
+    // capture data 
+    const { rol, usernameLogin } = req.user;
+    if (rol === "admin") {
+        AreaConocimiento.findOneAndUpdate({ _id: id, isActive: true }, { $push: { 'carreras': carrera }, userModificacion: usernameLogin }, { new: true }, (err, areaUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!areaUp) return res.status(404).json({ message: '¡El área de conocimiento no existe!' });
+
+            const token = jwt.sign({ nombre: areaUp.nombre }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Estado actualizado!', token });
+        });
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para editar área de conocimiento!' });
+    }
+
+}
+
+module.exports = { addAreaConocimiento, updateAddCarreras, updateStatus }
