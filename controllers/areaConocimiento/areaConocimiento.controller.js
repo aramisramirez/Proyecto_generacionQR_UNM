@@ -4,6 +4,21 @@ const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const validator = require('validator');
 
+const getAreas = async (req, res) => {
+
+    try {
+        let areas = await AreaConocimiento.find({ isActive: true }, { nombre: 1, carreras: 1 });
+        if (!areas.length) {
+            message = 'No existen registros';
+        }
+        return res.status(200).json({ areas });
+    }
+    catch (e) {
+        return res.status(500).json({
+            message: '¡Ocurrió un error!'
+        });
+    }
+}
 
 const addAreaConocimiento = async (req, res) => {
     // capture data 
@@ -94,4 +109,4 @@ const updateAddCarreras = async (req, res) => {
 
 }
 
-module.exports = { addAreaConocimiento, updateAddCarreras, updateStatus }
+module.exports = { addAreaConocimiento, updateAddCarreras, updateStatus, getAreas }

@@ -66,6 +66,26 @@ const getModalidad = async (req, res) => {
     }
 }
 
+const updateStatus = async (req, res) => {
+    const id = req.params.id;
+    // capture data 
+    const { rol, usernameLogin } = req.user;
+    if (rol === "admin") {
+        Modalidad.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, modalidadUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!modalidadUp) return res.status(404).json({ message: '¡la modalidad no existe!' });
+
+            const token = jwt.sign({ nombre: modalidadUp.nombre }, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Estado actualizado!', token });
+        });
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para editar estado de modalidades!' });
+    }
+
+}
 
 
-module.exports = { addModalidad, getModalidad }
+module.exports = { addModalidad, getModalidad, updateStatus }
