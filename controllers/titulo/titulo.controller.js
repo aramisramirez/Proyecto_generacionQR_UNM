@@ -168,5 +168,25 @@ const buscarXcedula = async (req, res) => {
 
 }
 
+//buscar registros por tipo de título
+const buscarXtipo = async (req, res) => {
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin" || rol == "secretario") {
+        const registrosTitulo = await Titulo.find({ tipoTitulo: req.body.tipoTitulo });
+        if (registrosTitulo.length > 0) {
+            return res.status(200).json({ registrosTitulo });
+        } else {
+            // Return error
+            res.status(401).json({ message: '¡No existe un registro de título con el tipo especificado!' });
+        }
 
-module.exports = { addTitulo, addTipoTitulo, buscarXcedula }
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para listar registros por tipo!' });
+    }
+
+}
+
+
+module.exports = { addTitulo, addTipoTitulo, buscarXcedula, buscarXtipo }
