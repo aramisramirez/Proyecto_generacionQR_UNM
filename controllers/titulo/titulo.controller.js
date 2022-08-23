@@ -148,17 +148,18 @@ const addTipoTitulo = async (req, res) => {
 
 const buscarXcedula = async (req, res) => {
     // capture data 
+    const paramCedula = req.params.cedula;
     const { rol } = req.user;
     if (rol === "admin" || rol == "secretario") {
-        const registroTitulo = await Titulo.findOne({ cedula: req.body.cedula });
-        if (registroTitulo) {
+        const registroTitulo = await Titulo.find({ cedula: paramCedula });
+        if (registroTitulo.length > 0) {
             const token = jwt.sign({ registroTitulo }, config.secret, {
                 expiresIn: 86400 // 24 Hours
             });
             return res.status(200).json({ token });
         } else {
             // Return error
-            res.status(200).json({ message: '¡No existe un registro de título con la cédula especificada!' });
+            res.status(401).json({ message: '¡No existe un registro de título con la cédula especificada!' });
         }
 
     } else {
