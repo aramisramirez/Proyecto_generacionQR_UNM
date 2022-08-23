@@ -1,5 +1,6 @@
 
 const Autoridad = require('../../models/autoridad/autoridad');
+const Cargos = require('../../models/cargos/cargos');
 const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const validator = require('validator');
@@ -102,7 +103,31 @@ const updateStatus = async (req, res) => {
 
 }
 
+const getCargos = async (req, res) => {
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin") {
+
+        try {
+            let cargos = await Cargos.find({}, { _id: 0 });
+            if (!cargos.length) {
+                message = 'No existen registros';
+            }
+            return res.status(200).json({
+                cargos
+            });
+        }
+        catch (e) {
+            return res.status(500).json({
+                message: '¡Ocurrió un error!'
+            });
+        }
+
+    } else {
+        // Return error
+        res.status(200).json({ message: '¡Este usuario no posee permisos para listar cargos de autoridades!' });
+    }
+}
 
 
-
-module.exports = { getAutoridad, addAutoridad, updateStatus }
+module.exports = { getAutoridad, addAutoridad, updateStatus, getCargos }

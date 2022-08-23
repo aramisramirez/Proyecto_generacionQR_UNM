@@ -6,6 +6,7 @@ const verifyAuth = require('../../middlewares/isAuth');
 const router = Router();
 
 router.get('/', verifyAuth.ensureAuth, autoridadCtrl.getAutoridad);
+router.get('/getCargos', verifyAuth.ensureAuth, autoridadCtrl.getCargos);
 router.post('/add', [verifyAuth.ensureAuth, verifyCargo.checkDuplicateCargoAutoridad], autoridadCtrl.addAutoridad);
 router.put('/updateStatus/:id', verifyAuth.ensureAuth, autoridadCtrl.updateStatus);
 
