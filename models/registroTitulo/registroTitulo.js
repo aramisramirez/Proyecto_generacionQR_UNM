@@ -47,6 +47,10 @@ const registroSchema = new Schema({
         type: String,
         required: true
     },
+    modalidad: {
+        type: String,
+        required: true
+    },
     noRegistro: {
         type: String,
         required: true,
