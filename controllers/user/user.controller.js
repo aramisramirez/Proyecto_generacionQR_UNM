@@ -2,6 +2,7 @@ const User = require('../../models/user/user');
 const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const validator = require('validator');
+const Bit = require('../../controllers/bitacora/bitacora.controller');
 
 const getUsers = async (req, res) => {
     // capture data 
@@ -31,6 +32,13 @@ const updatePassword = async (req, res) => {
     const id = req.params.id;
     const params = req.body;
     const { usernameLogin } = req.user;
+    const userFound = {
+        nombres: req.user.nombres,
+        apellidos: req.user.apellidos,
+        username: usernameLogin,
+        correo: req.user.correo,
+        rol: req.user.rol
+    };
     // array of validation
     const validate = [
         !validator.isEmpty(params.password)
@@ -45,7 +53,11 @@ const updatePassword = async (req, res) => {
             // If the data is correct, proceed to update the information
             User.findOneAndUpdate({ _id: id, isActive: true }, { password: passEncrypt, userModificacion: usernameLogin }, { new: true }, (err, userUp) => {
                 if (err) return res.status(404).json({ message: '¡El usuario no existe!' });
-                if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
+                if (!userUp)
+                    return res.status(404).json({ message: '¡El usuario no existe!' });
+                //bitácora
+                const accion = "Cambio de contraseña a Usuario: " + userUp.username;
+                Bit.add(userFound, accion);
                 const token = jwt.sign({ user: userUp.username }, config.secret, {
                     expiresIn: 86400 // 24 Hours
                 });
@@ -63,15 +75,26 @@ const updatePassword = async (req, res) => {
 
 }
 
+
 const updateStatus = async (req, res) => {
     const id = req.params.id;
     const { usernameLogin } = req.user;
+    const userFound = {
+        nombres: req.user.nombres,
+        apellidos: req.user.apellidos,
+        username: usernameLogin,
+        correo: req.user.correo,
+        rol: req.user.rol
+    };
     // capture data 
     const { rol } = req.user;
     if (rol === "admin") {
         User.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, userUp) => {
             if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
             if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
+            //bitácora
+            const accion = "Cambio de estado a deshabilitado al Usuario: " + userUp.username;
+            Bit.add(userFound, accion);
             const token = jwt.sign({ user: userUp.username }, config.secret, {
                 expiresIn: 86400 // 24 Hours
             });

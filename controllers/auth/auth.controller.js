@@ -8,10 +8,18 @@ const Bit = require('../../controllers/bitacora/bitacora.controller');
 const signUp = async (req, res) => {
     // capture data 
     const { rol } = req.user;
+    const { usernameLogin } = req.user;
+    const userFound = {
+        nombres: req.user.nombres,
+        apellidos: req.user.apellidos,
+        username: usernameLogin,
+        correo: req.user.correo,
+        rol: req.user.rol
+    };
+
     if (rol === "admin") {
         // capture data 
         const { nombres, apellidos, username, correo, password, rol } = req.body;
-        const { usernameLogin } = req.user;
 
         // array of validation
         const validate = [
@@ -44,8 +52,13 @@ const signUp = async (req, res) => {
                 });
 
                 const savedUser = await newUser.save();
-                // // Response success
-                const token = jwt.sign({ id: savedUser._id, username: savedUser.username }, config.secret, {
+
+                //bitácora
+                const accion = "Usuario: " + savedUser.username + " Agregado";
+                const BitNuevo = await Bit.add(userFound, accion);
+
+                // Response success
+                const token = jwt.sign({ id: savedUser._id, username: savedUser.username, bitStatus: BitNuevo.status, bitMessage: BitNuevo.message }, config.secret, {
                     expiresIn: 86400 // 24 Hours
                 });
 
@@ -83,7 +96,7 @@ const signIn = async (req, res) => {
     const accion = "Login";
     const BitLogin = await Bit.add(userFound, accion);
 
-    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, usernameLogin: userFound.username, rol: userFound.rol }, config.secret, {
+    const token = jwt.sign({ id: userFound._id, nombres: userFound.nombres, apellidos: userFound.apellidos, usernameLogin: userFound.username, correo: userFound.correo, rol: userFound.rol }, config.secret, {
         expiresIn: 86400 // 24 Hours
     });
 

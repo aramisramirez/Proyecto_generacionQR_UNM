@@ -5,6 +5,7 @@ const validator = require('validator');
 
 //nuevo registro
 const add = async (userFound, accion) => {
+
     const { nombres, apellidos, username, correo, rol } = userFound;
     // array of validation
     const validate = [
