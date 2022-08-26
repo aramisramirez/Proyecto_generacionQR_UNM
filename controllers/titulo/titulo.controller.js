@@ -175,9 +175,18 @@ const buscarXtipo = async (req, res) => {
     const paramTipo = req.params.tipo;
     const { rol } = req.user;
     if (rol === "admin" || rol == "secretario") {
-        const registrosTitulo = await Titulo.find({ tipoTitulo: paramTipo });
+        //paginación
+        const page = parseInt(req.params.page);
+        //cantidad de registros por página quemado
+        const page_size = 5;
+        const skip = (page - 1) * page_size;
+        const registrosTitulo = await Titulo.find({ tipoTitulo: paramTipo }).skip(skip).limit(page_size);
+        //contar registros
+        const totalRegistros = await Titulo.find({ tipoTitulo: paramTipo }).countDocuments();
+        const numeroPaginas = Math.ceil(totalRegistros / page_size);
+
         if (registrosTitulo.length > 0) {
-            return res.status(200).json({ registrosTitulo });
+            return res.status(200).json({ paginaActual: page, numeroPaginas, registrosTitulo });
         } else {
             // Return error
             res.status(401).json({ message: '¡No existe un registro de título con el tipo especificado!' });
