@@ -4,6 +4,6 @@ const verifyAuth = require('../../middlewares/isAuth');
 
 const router = Router();
 
-router.get('/', verifyAuth.ensureAuth, bitCtrl.getBit);
+router.get('/:page', verifyAuth.ensureAuth, bitCtrl.getBit);
 
 module.exports = router;

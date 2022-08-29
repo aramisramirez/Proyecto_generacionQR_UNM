@@ -41,13 +41,21 @@ const getBit = async (req, res) => {
     // capture data 
     const { rol } = req.user;
     if (rol === "admin") {
+        //paginación
+        const page = parseInt(req.params.page);
 
         try {
-            let bits = await Bit.find();
+            //cantidad de registros por página quemado
+            const page_size = 5;
+            const skip = (page - 1) * page_size;
+            const bits = await Bit.find().skip(skip).limit(page_size);
+            //contar registros
+            const totalRegistros = await Bit.find().countDocuments();
+            const numeroPaginas = Math.ceil(totalRegistros / page_size);
             if (!bits.length) {
                 message = 'No existen registros';
             }
-            return res.status(200).json({ bits });
+            return res.status(200).json({ paginaActual: page, numeroPaginas, bits });
         }
         catch (e) {
             return res.status(500).json({
