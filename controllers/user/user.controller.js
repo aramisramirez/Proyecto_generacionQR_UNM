@@ -8,13 +8,20 @@ const getUsers = async (req, res) => {
     // capture data 
     const { rol } = req.user;
     if (rol === "admin") {
-
+        //paginación
+        const page = parseInt(req.params.page);
         try {
-            let users = await User.find({ isActive: true }, { password: 0 });
+            //cantidad de registros por página quemado
+            const page_size = 5;
+            const skip = (page - 1) * page_size;
+            const users = await User.find({ isActive: true }, { password: 0 }).skip(skip).limit(page_size);
+            //contar registros
+            const totalRegistros = await User.find({ isActive: true }).countDocuments();
+            const numeroPaginas = Math.ceil(totalRegistros / page_size);
             if (!users.length) {
                 message = 'No existen registros';
             }
-            return res.status(200).json({ users });
+            return res.status(200).json({ paginaActual: page, numeroPaginas, users });
         }
         catch (e) {
             return res.status(500).json({
