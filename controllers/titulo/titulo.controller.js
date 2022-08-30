@@ -171,7 +171,6 @@ const buscarXcedula = async (req, res) => {
 }
 
 //buscar registros por tipo de título
-//reportes
 const buscarXtipo = async (req, res) => {
     // capture data 
     const paramTipo = req.params.tipo;
@@ -186,11 +185,11 @@ const buscarXtipo = async (req, res) => {
         const page_size = 5;
         const skip = (page - 1) * page_size;
         if (paramTipo === "Todos") {
-            const registrosTitulo = await Titulo.find({ estado: paramEstado }).skip(skip).limit(page_size);
+            const registrosTitulo = await Titulo.find().skip(skip).limit(page_size);
             //contar registros
-            const totalRegistros = await Titulo.find({ estado: paramEstado }).countDocuments();
+            const totalRegistros = await Titulo.find().countDocuments();
             const numeroPaginas = Math.ceil(totalRegistros / page_size);
-            return res.status(200).json({ paginaActual: page, numeroPaginas, totalRegistros, registrosTitulo });
+            return res.status(200).json({ numeroPaginas, totalRegistros, registrosTitulo });
         }
         else {
             const registrosTitulo = await Titulo.find({ tipoTitulo: paramTipo, estado: paramEstado }).skip(skip).limit(page_size);

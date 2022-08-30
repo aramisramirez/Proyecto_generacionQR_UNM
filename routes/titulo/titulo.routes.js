@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const tituloCtrl = require('../../controllers/titulo/titulo.controller');
+const tituloReportCtrl = require('../../controllers/titulo/reports/titulo.reports');
 const selectCtrl = require('../../controllers/titulo/selectsTitulo.controller');
 const verifyAuth = require('../../middlewares/isAuth');
 const verifyRegistro = require('../../middlewares/verifyNoRegistro');
@@ -14,6 +15,8 @@ router.get('/buscarXTipo/:tipo/:estado/:page', verifyAuth.ensureAuth, tituloCtrl
 router.get('/buscarXnoRegistro/:noRegistro', verifyAuth.ensureAuth, tituloCtrl.buscarXnoRegistro);
 router.post('/add', [verifyAuth.ensureAuth, verifyRegistro.checkDuplicateNoRegistro], tituloCtrl.addTitulo);
 router.post('/addTipoTitulo', [verifyAuth.ensureAuth, verifyTipoTitulo.checkTipoTitulo], tituloCtrl.addTipoTitulo);
+//reportes
+router.get('/reporteTipoAnio/:tipo/:estado/:anio', verifyAuth.ensureAuth, tituloReportCtrl.reportTipoEstadoXanio);
 
 
 module.exports = router;
