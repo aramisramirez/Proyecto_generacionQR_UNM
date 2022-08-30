@@ -10,7 +10,7 @@ const router = Router();
 router.get('/getMeses', verifyAuth.ensureAuth, selectCtrl.getMes);
 router.get('/getTipos', verifyAuth.ensureAuth, selectCtrl.getTipoTitulo);
 router.get('/buscarXcedula/:cedula', verifyAuth.ensureAuth, tituloCtrl.buscarXcedula);
-router.get('/buscarXTipo/:tipo/:page', verifyAuth.ensureAuth, tituloCtrl.buscarXtipo);
+router.get('/buscarXTipo/:tipo/:estado/:page', verifyAuth.ensureAuth, tituloCtrl.buscarXtipo);
 router.get('/buscarXnoRegistro/:noRegistro', verifyAuth.ensureAuth, tituloCtrl.buscarXnoRegistro);
 router.post('/add', [verifyAuth.ensureAuth, verifyRegistro.checkDuplicateNoRegistro], tituloCtrl.addTitulo);
 router.post('/addTipoTitulo', [verifyAuth.ensureAuth, verifyTipoTitulo.checkTipoTitulo], tituloCtrl.addTipoTitulo);

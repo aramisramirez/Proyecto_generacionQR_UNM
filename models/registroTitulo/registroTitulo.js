@@ -80,6 +80,7 @@ const registroSchema = new Schema({
         type: String,
         required: true
     },
+    estado: String,
     numeroImpresiones: Number,
     isActive: Boolean,
     userCreacion: String,

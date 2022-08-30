@@ -81,6 +81,7 @@ const addTitulo = async (req, res) => {
                 secretario,
                 responsableRegistro,
                 numeroImpresiones: 0,
+                estado: "Registro",
                 userCreacion: usernameLogin,
                 isACtive: true,
                 userModificacion: null,
@@ -170,28 +171,40 @@ const buscarXcedula = async (req, res) => {
 }
 
 //buscar registros por tipo de título
+//reportes
 const buscarXtipo = async (req, res) => {
     // capture data 
     const paramTipo = req.params.tipo;
     const { rol } = req.user;
     if (rol === "admin" || rol == "secretario") {
+
+        //estado
+        const paramEstado = req.params.estado;
         //paginación
         const page = parseInt(req.params.page);
         //cantidad de registros por página quemado
         const page_size = 5;
         const skip = (page - 1) * page_size;
-        const registrosTitulo = await Titulo.find({ tipoTitulo: paramTipo }).skip(skip).limit(page_size);
-        //contar registros
-        const totalRegistros = await Titulo.find({ tipoTitulo: paramTipo }).countDocuments();
-        const numeroPaginas = Math.ceil(totalRegistros / page_size);
-
-        if (registrosTitulo.length > 0) {
-            return res.status(200).json({ paginaActual: page, numeroPaginas, registrosTitulo });
-        } else {
-            // Return error
-            res.status(401).json({ message: '¡No existe un registro de título con el tipo especificado!' });
+        if (paramTipo === "Todos") {
+            const registrosTitulo = await Titulo.find({ estado: paramEstado }).skip(skip).limit(page_size);
+            //contar registros
+            const totalRegistros = await Titulo.find({ estado: paramEstado }).countDocuments();
+            const numeroPaginas = Math.ceil(totalRegistros / page_size);
+            return res.status(200).json({ paginaActual: page, numeroPaginas, totalRegistros, registrosTitulo });
         }
+        else {
+            const registrosTitulo = await Titulo.find({ tipoTitulo: paramTipo, estado: paramEstado }).skip(skip).limit(page_size);
+            //contar registros
+            const totalRegistros = await Titulo.find({ tipoTitulo: paramTipo, estado: paramEstado }).countDocuments();
+            const numeroPaginas = Math.ceil(totalRegistros / page_size);
 
+            if (registrosTitulo.length > 0) {
+                return res.status(200).json({ paginaActual: page, numeroPaginas, totalRegistros, registrosTitulo });
+            } else {
+                // Return error
+                res.status(401).json({ message: '¡No existe un registro de título con el tipo y estado de título especificado!' });
+            }
+        }
     } else {
         // Return error
         res.status(200).json({ message: '¡Este usuario no posee permisos para listar registros por tipo!' });
