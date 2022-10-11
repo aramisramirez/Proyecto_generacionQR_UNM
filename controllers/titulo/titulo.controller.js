@@ -3,7 +3,10 @@ const TipoTitulo = require('../../models/registroTitulo/tipoTitulo');
 const jwt = require('jsonwebtoken');
 const config = require('../../database/config');
 const validator = require('validator');
-
+const Bit = require('../../controllers/bitacora/bitacora.controller');
+const tipoTitulo = require('../../models/registroTitulo/tipoTitulo');
+const registroTitulo = require('../../models/registroTitulo/registroTitulo');
+const user = require('../../models/user/user');
 
 const addTitulo = async (req, res) => {
     // capture data 
@@ -15,6 +18,7 @@ const addTitulo = async (req, res) => {
             apellidos,
             sede,
             areaConocimiento,
+            titulo,
             carrera,
             carnet,
             sexo,
@@ -40,6 +44,7 @@ const addTitulo = async (req, res) => {
             !validator.isEmpty(apellidos),
             !validator.isEmpty(sede),
             !validator.isEmpty(areaConocimiento),
+            !validator.isEmpty(titulo),
             !validator.isEmpty(carrera),
             !validator.isEmpty(carnet),
             !validator.isEmpty(sexo),
@@ -65,6 +70,7 @@ const addTitulo = async (req, res) => {
                 apellidos,
                 sede,
                 areaConocimiento,
+                titulo,
                 carrera,
                 carnet,
                 sexo,
@@ -216,10 +222,20 @@ const buscarXnoRegistro = async (req, res) => {
     // capture data 
     const paramNoRegistro = req.params.noRegistro;
     const { rol } = req.user;
-    if (rol === "admin" || rol == "secretario") {
+    const { usernameLogin } = req.user;
+    const userFound = {
+        nombres: req.user.nombres,
+        apellidos: req.user.apellidos,
+        username: usernameLogin,
+        correo: req.user.correo,
+        rol: req.user.rol
+    };
+    if (rol === "admin" || rol == "secretario" || rol == "registro") {
         const registrosTitulo = await Titulo.find({ noRegistro: paramNoRegistro });
         if (registrosTitulo.length > 0) {
-            return res.status(200).json({ registrosTitulo });
+            const accion = "Busqueda de generación de qr";
+            const BitGeneracion = await Bit.add(userFound, accion);
+            return res.status(200).json({ registrosTitulo,  bitStatus: BitGeneracion.status, bitMessage: BitGeneracion.message });
         } else {
             // Return error
             res.status(401).json({ message: '¡No existe un registro de título con el número de registro especificado!' });
@@ -227,10 +243,56 @@ const buscarXnoRegistro = async (req, res) => {
 
     } else {
         // Return error
-        res.status(200).json({ message: '¡Este usuario no posee permisos para listar registros por número de registro!' });
+        res.status(400).json({ message: '¡Este usuario no posee permisos para listar registros por número de registro!' });
+    }
+
+}
+
+const buscarXid = async (req, res) => {
+    // capture data 
+    const paramid = req.params.id;
+    const registrosTitulo = await Titulo.find({ _id: paramid });
+    if (registrosTitulo.length > 0) {
+        return res.status(200).json({ registrosTitulo });
+    } else {
+        // Return error
+        res.status(401).json({ message: '¡No existe tu registro!' });
+    }
+
+
+}
+
+
+const updateStatus = async (req, res) => {
+    const id = req.params.id;
+    const { usernameLogin } = req.user;
+    const userFound = {
+        nombres: req.user.nombres,
+        apellidos: req.user.apellidos,
+        username: usernameLogin,
+        correo: req.user.correo,
+        rol: req.user.rol
+    };
+    // capture data 
+    const { rol } = req.user;
+    if (rol === "admin" ||  rol == "secretario" || rol == "registro") {
+        Titulo.findOneAndUpdate({ _id: id, estado: 'Registro', numeroImpresiones: 0 }, {  estado: 'Generado'}, { new: true }, (err, userUp) => {
+            if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
+            if (!userUp) return res.status(404).json({ message: '¡Este registro no se encontro!' });
+            //bitácora
+            const accion = "Generación de qr: "+ userUp.nombres;
+            Bit.add(userFound, accion);
+            const token = jwt.sign({ Titulo: userUp.estado}, config.secret, {
+                expiresIn: 86400 // 24 Hours
+            });
+            return res.status(200).json({ message: '¡Qr Generado!', token });
+        });
+    } else {
+        // Return error
+        res.status(400).json({ message: '¡Este usuario no posee permisos para editar estado de usuarios!' });
     }
 
 }
 
 
-module.exports = { addTitulo, addTipoTitulo, buscarXcedula, buscarXtipo, buscarXnoRegistro }
+module.exports = { addTitulo, addTipoTitulo, buscarXcedula, buscarXtipo, buscarXnoRegistro, buscarXid, updateStatus }

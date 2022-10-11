@@ -19,6 +19,10 @@ const registroSchema = new Schema({
         type: String,
         required: true
     },
+    titulo: {
+        type: String,
+        required: true
+    },
     carrera: {
         type: String,
         required: true

@@ -95,7 +95,7 @@ const updateStatus = async (req, res) => {
     };
     // capture data 
     const { rol } = req.user;
-    if (rol === "admin") {
+    if (rol === "admin" ||  rol == "secretario") {
         User.findOneAndUpdate({ _id: id, isActive: true }, { isActive: false, userAnulacion: usernameLogin, fechaAnulacion: new Date() }, { new: true }, (err, userUp) => {
             if (err) return res.status(404).json({ message: '¡Ocurrió un error!' });
             if (!userUp) return res.status(404).json({ message: '¡El usuario no existe!' });
@@ -109,7 +109,7 @@ const updateStatus = async (req, res) => {
         });
     } else {
         // Return error
-        res.status(200).json({ message: '¡Este usuario no posee permisos para editar estado de usuarios!' });
+        res.status(400).json({ message: '¡Este usuario no posee permisos para editar estado de usuarios!' });
     }
 
 }

@@ -13,10 +13,13 @@ router.get('/getTipos', verifyAuth.ensureAuth, selectCtrl.getTipoTitulo);
 router.get('/buscarXcedula/:cedula', verifyAuth.ensureAuth, tituloCtrl.buscarXcedula);
 router.get('/buscarXTipo/:tipo/:estado/:page', verifyAuth.ensureAuth, tituloCtrl.buscarXtipo);
 router.get('/buscarXnoRegistro/:noRegistro', verifyAuth.ensureAuth, tituloCtrl.buscarXnoRegistro);
+router.get('/search/:id',  tituloCtrl.buscarXid);
 router.post('/add', [verifyAuth.ensureAuth, verifyRegistro.checkDuplicateNoRegistro], tituloCtrl.addTitulo);
 router.post('/addTipoTitulo', [verifyAuth.ensureAuth, verifyTipoTitulo.checkTipoTitulo], tituloCtrl.addTipoTitulo);
 //reportes
 router.get('/reporteTipoAnio/:tipo/:estado/:anio', verifyAuth.ensureAuth, tituloReportCtrl.reportTipoEstadoXanio);
+
+router.put('/updateStatus/:id', [verifyAuth.ensureAuth], tituloCtrl.updateStatus);
 
 
 module.exports = router;

@@ -20,6 +20,24 @@ const getAreas = async (req, res) => {
     }
 }
 
+const getAreasCarreras = async (req, res) => {
+
+    const nombreArea = req.params.nombre;
+
+    try {
+        let areas = await AreaConocimiento.findOne({ isActive: true, nombre: nombreArea });
+        if (!areas.length) {
+            message = 'No existen registros';
+        }
+        return res.status(200).json({ areas });
+    }
+    catch (e) {
+        return res.status(500).json({
+            message: '¡Ocurrió un error!'
+        });
+    }
+}
+
 const addAreaConocimiento = async (req, res) => {
     // capture data 
     const { rol } = req.user;
@@ -109,4 +127,4 @@ const updateAddCarreras = async (req, res) => {
 
 }
 
-module.exports = { addAreaConocimiento, updateAddCarreras, updateStatus, getAreas }
+module.exports = { addAreaConocimiento, updateAddCarreras, updateStatus, getAreas, getAreasCarreras }
